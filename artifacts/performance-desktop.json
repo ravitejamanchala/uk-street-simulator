@@ -1,0 +1,132 @@
+{
+  "url": "http://127.0.0.1:8088/",
+  "errors": [],
+  "results": [
+    {
+      "preset": "desktop",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "darwin 27.0.0, Apple A18 Pro, 8 GB RAM",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 10154,
+      "targetFps": 60,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1440,
+        900
+      ],
+      "fps": 60.00393468424157,
+      "frames": 609,
+      "elapsedMs": 10132.9,
+      "averageFps": 60.00256589919964,
+      "rafGapP95": 16.700000000000728,
+      "frameMsP95": 16.700000000000728,
+      "renderCpuP50": 1.4000000059604645,
+      "renderCpuP95": 2.699999988079071,
+      "drawCalls": 231,
+      "mirrorDrawCalls": 87,
+      "triangles": 74974,
+      "textures": 21,
+      "geometries": 141,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -78.35732777989428
+      ]
+    },
+    {
+      "preset": "balanced",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "darwin 27.0.0, Apple A18 Pro, 8 GB RAM",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 10138,
+      "targetFps": 60,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1414,
+        883
+      ],
+      "fps": 60,
+      "frames": 609,
+      "elapsedMs": 10133,
+      "averageFps": 60.00197374913648,
+      "rafGapP95": 16.700000000000728,
+      "frameMsP95": 16.700000000000728,
+      "renderCpuP50": 1.5,
+      "renderCpuP95": 2.600000023841858,
+      "drawCalls": 217,
+      "mirrorDrawCalls": 83,
+      "triangles": 70934,
+      "textures": 21,
+      "geometries": 141,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -78.02744146038302
+      ]
+    },
+    {
+      "preset": "mobile",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "darwin 27.0.0, Apple A18 Pro, 8 GB RAM",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 10150,
+      "targetFps": 30,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1019,
+        637
+      ],
+      "fps": 30.003871467285975,
+      "frames": 305,
+      "elapsedMs": 10132.899999999998,
+      "averageFps": 30.001282949599826,
+      "rafGapP95": 16.700000000004366,
+      "frameMsP95": 33.400000000001455,
+      "renderCpuP50": 1.9000000059604645,
+      "renderCpuP95": 2.800000011920929,
+      "drawCalls": 172,
+      "mirrorDrawCalls": 79,
+      "triangles": 60140,
+      "textures": 21,
+      "geometries": 144,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -77.95896202279765
+      ]
+    }
+  ]
+}

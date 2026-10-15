@@ -20,4 +20,17 @@ Raw initial results: `artifacts/performance-before-optimisation.json` and `artif
 
 Static buildings now batch all six variants into shared material meshes per 50 m chunk. Trees, lamps and repeated props still use instancing. Near/far LODs and distance culling remain. The rear-view update rate is now 2/3/5 Hz, shadow refresh is capped at 10/15/30 Hz, paused/intro rendering is capped at 5 FPS, and desktop defaults to Balanced. Fixed 60 Hz driving physics remains unchanged. Touch and keyboard controls, reset, collision blocking and examiner faults passed again in desktop Chrome, Pixel 7 layout, iPhone 13 WebKit emulation and landscape Chrome.
 
-At the same stationary starting view, the rear-view pass dropped from 147 to 38 draw calls; desktop CPU submission p95 dropped from 3.9 to 2.4 ms in functional checks. Those short functional samples are not a warmed benchmark. A post-fix moving measurement is recorded separately when complete. Physical phone testing and interactive frame pacing still need evaluation.
+At the same stationary starting view, the rear-view pass dropped from 147 to 38 draw calls; desktop CPU submission p95 dropped from 3.9 to 2.4 ms in functional checks. Those short functional samples are not a warmed benchmark. Physical phone testing and interactive frame pacing still need evaluation.
+
+## Post-fix moving check
+
+Local production build of commit `b723e665a5d6f9e4c42ff30d88b54b58a184794a`, same Mac, Chrome and Metal GPU, three seconds warm-up plus **10 seconds** driving per preset. This is a shorter check through the first ~80 m, not a repeat of the entire initial 30-second route sample; it cannot establish long-session stability.
+
+| Preset | Actual average FPS | Frame interval p95 | CPU render submission p95 |
+|---|---:|---:|---:|
+| Desktop | 60.00 | 16.7 ms | 2.7 ms |
+| Balanced | 60.00 | 16.7 ms | 2.6 ms |
+| Mobile, Mac viewport | 30.00 | 33.4 ms | 2.8 ms |
+
+Raw post-fix data: `artifacts/performance-desktop.json`. These measurements show reduced CPU submission work, but they do not override the user's report of lag or certify the in-app browser's presentation. Automated graphics tests were stopped after this check so they do not compete with interactive review. If lag persists, capture the actual browser/device and frame pacing before increasing visual complexity.
+
