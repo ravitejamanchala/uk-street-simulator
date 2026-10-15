@@ -1,0 +1,162 @@
+[
+  {
+    "name": "desktop-chrome",
+    "status": "passed",
+    "errors": [],
+    "stats": {
+      "preset": "desktop",
+      "targetFps": 60,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1440,
+        900
+      ],
+      "fps": 59,
+      "frames": 262,
+      "elapsedMs": 5066.5,
+      "averageFps": 51.51485246225205,
+      "rafGapP95": 16.700000000000728,
+      "frameMsP95": 16.700000000000728,
+      "renderCpuP50": 1.100000023841858,
+      "renderCpuP95": 2.4000000059604645,
+      "drawCalls": 251,
+      "mirrorDrawCalls": 38,
+      "triangles": 73620,
+      "textures": 21,
+      "geometries": 149,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -7
+      ]
+    }
+  },
+  {
+    "name": "pixel-7-layout",
+    "status": "passed",
+    "errors": [],
+    "stats": {
+      "preset": "mobile",
+      "targetFps": 30,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        412,
+        839
+      ],
+      "buffer": [
+        515,
+        1048
+      ],
+      "fps": 30.000967773153942,
+      "frames": 483,
+      "elapsedMs": 16066.099999999999,
+      "averageFps": 30.0010581286062,
+      "rafGapP95": 16.799999999999272,
+      "frameMsP95": 33.400000000001455,
+      "renderCpuP50": 1.0999999940395355,
+      "renderCpuP95": 2.2000000178813934,
+      "drawCalls": 163,
+      "mirrorDrawCalls": 32,
+      "triangles": 59244,
+      "textures": 21,
+      "geometries": 123,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -7
+      ]
+    }
+  },
+  {
+    "name": "iphone-13-webkit",
+    "status": "passed",
+    "errors": [],
+    "stats": {
+      "preset": "mobile",
+      "targetFps": 30,
+      "gpu": "Apple GPU",
+      "viewport": [
+        390,
+        664
+      ],
+      "buffer": [
+        487,
+        830
+      ],
+      "fps": 30,
+      "frames": 508,
+      "elapsedMs": 16982,
+      "averageFps": 29.855140737251208,
+      "rafGapP95": 11,
+      "frameMsP95": 41,
+      "renderCpuP50": 2,
+      "renderCpuP95": 4,
+      "drawCalls": 166,
+      "mirrorDrawCalls": 32,
+      "triangles": 59270,
+      "textures": 21,
+      "geometries": 126,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -7
+      ]
+    }
+  },
+  {
+    "name": "phone-landscape",
+    "status": "passed",
+    "errors": [],
+    "stats": {
+      "preset": "mobile",
+      "targetFps": 30,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        915,
+        412
+      ],
+      "buffer": [
+        1143,
+        515
+      ],
+      "fps": 30.003871467286082,
+      "frames": 127,
+      "elapsedMs": 4183.2,
+      "averageFps": 30.120481927710845,
+      "rafGapP95": 16.800000000000182,
+      "frameMsP95": 33.400000000000546,
+      "renderCpuP50": 1.2000000178813934,
+      "renderCpuP95": 2.5999999940395355,
+      "drawCalls": 180,
+      "mirrorDrawCalls": 32,
+      "triangles": 59438,
+      "textures": 21,
+      "geometries": 141,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -7
+      ]
+    }
+  }
+]

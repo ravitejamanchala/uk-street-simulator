@@ -4,7 +4,7 @@ const specs=[{name:'desktop-chrome',engine:chromium,options:{viewport:{width:144
 for(const spec of specs){if(process.env.TEST_DEVICE&&spec.name!==process.env.TEST_DEVICE)continue;let browser;const result={name:spec.name,status:'running',errors:[]};results.push(result);
  try{
  browser=await spec.engine.launch(spec.engine===chromium?{executablePath:process.env.CHROMIUM_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',args:['--use-angle=metal']}:{});const context=await browser.newContext(spec.options),page=await context.newPage();page.on('pageerror',e=>result.errors.push(e.message));
- await page.goto(url);await page.waitForFunction(()=>window.sim?.ready,{}, {timeout:60000});await page.locator('#start').click();await page.locator('#observe').click();
+ await page.goto(url);await page.waitForFunction(()=>window.sim?.ready,{}, {timeout:60000});await page.locator('#start').click();if(!spec.options.hasTouch)await page.evaluate(()=>window.sim.setQuality('desktop'));await page.locator('#observe').click();
  if(spec.options.hasTouch){
   const rects=await page.locator('[data-input]').evaluateAll(buttons=>buttons.map(b=>{const r=b.getBoundingClientRect();return {id:b.dataset.input,x:r.x,y:r.y,w:r.width,h:r.height,hit:b.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2))};}));
   for(const r of rects){assert.ok(r.w>=44&&r.h>=44);assert.ok(r.x>=0&&r.y>=0&&r.x+r.w<=spec.options.viewport.width+1&&r.y+r.h<=spec.options.viewport.height+1,JSON.stringify(r));assert.ok(r.hit,JSON.stringify(r));}

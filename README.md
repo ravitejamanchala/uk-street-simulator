@@ -2,9 +2,11 @@
 
 A separate playable 400-metre UK street prototype. Cambridge-inspired architecture on an **original fictional layout**, not a surveyed Cambridge road. It uses actual real-time 3D rendering, not video or a static mockup.
 
-**Demo:** https://ravitejamanchala.github.io/uk-street-simulator/
+**Live demo:** https://manchala.co.uk/uk-street-simulator/
 
-Current milestone is under active evaluation. The existing `cambridge-learner-driv` repository, deployment, users and billing are untouched.
+GitHub Pages URL: https://ravitejamanchala.github.io/uk-street-simulator/ (redirects to the account’s existing custom domain).
+
+The first milestone is deployed for review. The existing `cambridge-learner-driv` repository, deployment, users and billing are untouched.
 
 ## Run
 
@@ -61,11 +63,13 @@ Run the Python asset generator first. The Blender script imports the same GLBs a
 
 ## Quality and performance
 
-Select Mobile, Balanced or Desktop in the demo. Mobile is capped at a **30 FPS target**, DPR 1.25, 650,000 pixels and 512 px shadows. Desktop targets **60 FPS**, DPR 1.5, at most 2,073,600 pixels and 2048 px shadows. Shared materials and textures, per-chunk instancing, distance culling and near/far LODs reduce memory and draw work. Rear-view updates run at 3/5/8 Hz by preset.
+Select Mobile, Balanced or Desktop in the demo. Mobile is capped at a **30 FPS target**, DPR 1.25, 650,000 pixels and 512 px shadows. Desktop targets **60 FPS**, DPR 1.5, at most 2,073,600 pixels and 2048 px shadows. Shared materials and textures, static building batches, prop instancing, distance culling and near/far LODs reduce memory and draw work. Rear-view updates run at 2/3/5 Hz and shadows at 10/15/30 Hz by preset. Desktop starts on Balanced; paused rendering drops to 5 FPS.
 
-Targets: iPhone 13 / Google Pixel 7 at 30 FPS; MacBook Neo (Apple A18 Pro, 8 GB) at 60 FPS. **Physical phones have not been measured.** Desktop and mobile-layout proxy measurements are being collected; those are separate from target-device claims. See `docs/performance.md` and raw `artifacts/*.json` when published. No photorealistic claim is made.
+Targets: iPhone 13 / Google Pixel 7 at 30 FPS; MacBook Neo (Apple A18 Pro, 8 GB) at 60 FPS. **Physical phones have not been measured.** Desktop and mobile-layout proxy measurements are recorded separately from target-device claims. See `docs/performance.md` and raw `artifacts/*.json` when published. No photorealistic claim is made.
 
 ```sh
+# Browser tests use installed Chrome plus Playwright WebKit:
+npx playwright install webkit
 npm run test:browser
 npm run benchmark
 # Existing installed WebKit runtime, if needed:
@@ -73,7 +77,7 @@ PLAYWRIGHT_BROWSERS_PATH=/path/to/browsers TEST_DEVICE=iphone-13-webkit npm run 
 BENCH_MOBILE=1 BENCH_ENGINE=webkit npm run benchmark
 ```
 
-Set `CHROMIUM_PATH` outside the default macOS Chrome installation. Browser tests require the local server. Measurements log the actual renderer, viewport, drawing buffer, sample duration, render-submission FPS, frame intervals, CPU submission time and draw counts. CPU submission time is not GPU frame time.
+Set `CHROMIUM_PATH` outside the default macOS Chrome installation. `BENCH_HOST` can supply a precise device name; otherwise the benchmark records OS, CPU and memory. Browser tests require the local server. Measurements log the actual renderer, viewport, drawing buffer, sample duration, render-submission FPS, frame intervals, CPU submission time and draw counts. CPU submission time is not GPU frame time.
 
 ## Limits
 

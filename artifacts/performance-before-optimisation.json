@@ -1,0 +1,132 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "preset": "desktop",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "MacBook Neo, Apple A18 Pro, 8 GB RAM, macOS",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 31570,
+      "targetFps": 60,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1440,
+        900
+      ],
+      "fps": 42.297855597088095,
+      "frames": 1866,
+      "elapsedMs": 31398.7,
+      "averageFps": 59.39736358511658,
+      "rafGapP95": 16.700000000004366,
+      "frameMsP95": 16.700000000004366,
+      "renderCpuP50": 1.800000011920929,
+      "renderCpuP95": 5.0999999940395355,
+      "drawCalls": 280,
+      "mirrorDrawCalls": 238,
+      "triangles": 80358,
+      "textures": 21,
+      "geometries": 153,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -245.21938592717325
+      ]
+    },
+    {
+      "preset": "balanced",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "MacBook Neo, Apple A18 Pro, 8 GB RAM, macOS",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 30539,
+      "targetFps": 60,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1414,
+        883
+      ],
+      "fps": 60,
+      "frames": 1832,
+      "elapsedMs": 30515.5,
+      "averageFps": 60.00229391620652,
+      "rafGapP95": 16.70000000001164,
+      "frameMsP95": 16.70000000001164,
+      "renderCpuP50": 1.800000011920929,
+      "renderCpuP95": 3.300000011920929,
+      "drawCalls": 282,
+      "mirrorDrawCalls": 230,
+      "triangles": 75596,
+      "textures": 21,
+      "geometries": 153,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -238.2125614451684
+      ]
+    },
+    {
+      "preset": "mobile",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "MacBook Neo, Apple A18 Pro, 8 GB RAM, macOS",
+      "browserVersion": "155.0.8059.40",
+      "engine": "Chrome",
+      "mobileEmulation": false,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 30621,
+      "targetFps": 30,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple A18 Pro, Unspecified Version)",
+      "viewport": [
+        1440,
+        900
+      ],
+      "buffer": [
+        1019,
+        637
+      ],
+      "fps": 30.003871467286185,
+      "frames": 918,
+      "elapsedMs": 30565.399999999994,
+      "averageFps": 30.001243235815668,
+      "rafGapP95": 16.70000000001164,
+      "frameMsP95": 33.40000000000873,
+      "renderCpuP50": 1.800000011920929,
+      "renderCpuP95": 3.7000000178813934,
+      "drawCalls": 252,
+      "mirrorDrawCalls": 203,
+      "triangles": 67136,
+      "textures": 21,
+      "geometries": 153,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -239.09264380434226
+      ]
+    }
+  ],
+  "url": "https://manchala.co.uk/uk-street-simulator/"
+}

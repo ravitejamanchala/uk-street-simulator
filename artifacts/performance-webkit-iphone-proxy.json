@@ -1,0 +1,48 @@
+{
+  "url": "https://manchala.co.uk/uk-street-simulator/",
+  "errors": [],
+  "results": [
+    {
+      "preset": "mobile",
+      "method": "headless browser render submissions; hardware renderer shown below; warm-up excluded",
+      "host": "MacBook Neo, Apple A18 Pro, 8 GB RAM, macOS",
+      "browserVersion": "26.0",
+      "engine": "WebKit",
+      "mobileEmulation": true,
+      "physicalMobileDevice": false,
+      "wallDurationMs": 30596,
+      "targetFps": 30,
+      "gpu": "Apple GPU",
+      "viewport": [
+        390,
+        664
+      ],
+      "buffer": [
+        487,
+        830
+      ],
+      "fps": 30,
+      "frames": 906,
+      "elapsedMs": 30521,
+      "averageFps": 29.651715212476656,
+      "rafGapP95": 11,
+      "frameMsP95": 40,
+      "renderCpuP50": 2,
+      "renderCpuP95": 4,
+      "drawCalls": 237,
+      "mirrorDrawCalls": 203,
+      "triangles": 66514,
+      "textures": 21,
+      "geometries": 145,
+      "driverEyeMetres": [
+        0.37,
+        1.22,
+        0.23
+      ],
+      "position": [
+        -1.65,
+        -237.59904939330698
+      ]
+    }
+  ]
+}

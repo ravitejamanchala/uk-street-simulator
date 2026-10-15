@@ -10,17 +10,17 @@ import {createAutomaticState,selectGear} from '../core/vehicle-state.js';
 import {nearest} from '../core/net.js';
 const $=id=>document.getElementById(id);globalThis.THREE=T;
 let createPlayer;
-const coarse=matchMedia('(pointer:coarse)').matches;let preset=coarse?'mobile':'desktop';
-try{const saved=localStorage.getItem('elmfield.quality');if(QUALITY[saved])preset=saved;}catch{}
+const coarse=matchMedia('(pointer:coarse)').matches;let preset=coarse?'mobile':'balanced';
+try{const saved=localStorage.getItem('elmfield.quality.v2');if(QUALITY[saved])preset=saved;}catch{}
 let quality=QUALITY[preset];$('quality').value=preset;
 let renderer,scene,camera,environment,assets,player,test,traffic,cockpit,sky,mirrorTarget,mirrorCamera;
-let started=false,paused=true,initialBrake=true,clock=0,accumulator=0,cameraMode=0,toastUntil=0,mirrorAt=-1;
+let started=false,paused=true,initialBrake=true,clock=0,accumulator=0,cameraMode=0,toastUntil=0,mirrorAt=-1,shadowAt=-1;
 const keys=new Set(),touch=new Map();const input={throttle:0,brake:0,steer:0};let previous=performance.now(),renderDeadline=0,lastHud=0;
 const samples=[],cpuSamples=[];let lastActualRender=0;let rendered=0,lastFps=performance.now(),fpsFrames=0,fps=0,lastMirrorCalls=0;
 const cameraLocal=new T.Vector3(),target=new T.Vector3(),up=new T.Vector3(0,1,0),rotation=new T.Quaternion();
 function toast(text){$('toast').textContent=text;$('toast').hidden=false;toastUntil=clock+4;}
 function clearInput(){keys.clear();touch.clear();Object.assign(input,{throttle:0,brake:1,steer:0});document.querySelectorAll('.pressed').forEach(b=>b.classList.remove('pressed'));}
-function pause(value=!paused){paused=value;clearInput();document.body.classList.toggle('paused',paused);$('pause').textContent=paused?'▶':'Ⅱ';$('pause').setAttribute('aria-label',paused?'Resume':'Pause');}
+function pause(value=!paused){paused=value;renderDeadline=performance.now();clearInput();document.body.classList.toggle('paused',paused);$('pause').textContent=paused?'▶':'Ⅱ';$('pause').setAttribute('aria-label',paused?'Resume':'Pause');}
 function observe(){if(!player)return;player.lookAt=traffic.clock;player.observations.push({view:'surroundings',at:traffic.clock});toast('Surroundings check recorded');}
 function signal(dir){player?.signal(dir);}
 function gear(value){if(!player)return;const brake=input.brake;const changed=selectGear(player.operation,value,player.v,brake,traffic.clock);if(!changed&&player.operation.gear!==value)toast('Stop and hold the brake to change gear');$('gearLabel').textContent=player.operation.gear;}
@@ -32,10 +32,10 @@ function reset(){
  if(started)pause(false);player.sync(clock);toast('Reset · check surroundings before moving off');
 }
 function applyQuality(){
- renderDeadline=performance.now();quality=QUALITY[preset];scene.fog.density=preset==='mobile'?.0075:preset==='balanced'?.006:.0048;$('preset').textContent=preset.toUpperCase();$('quality').value=preset;
+ renderDeadline=performance.now();shadowAt=-1;quality=QUALITY[preset];scene.fog.density=preset==='mobile'?.0075:preset==='balanced'?.006:.0048;$('preset').textContent=preset.toUpperCase();$('quality').value=preset;
  sky.sun.shadow.mapSize.set(quality.shadow,quality.shadow);if(sky.sun.shadow.map){sky.sun.shadow.map.dispose();sky.sun.shadow.map=null;}
  mirrorTarget?.dispose();mirrorTarget=new T.WebGLRenderTarget(quality.mirrorSize,Math.round(quality.mirrorSize/2.8),{minFilter:T.LinearFilter,magFilter:T.LinearFilter,generateMipmaps:false});cockpit.mirror.material.map=mirrorTarget.texture;cockpit.mirror.material.toneMapped=false;cockpit.mirror.material.needsUpdate=true;
- resize();try{localStorage.setItem('elmfield.quality',preset);}catch{}
+ resize();try{localStorage.setItem('elmfield.quality.v2',preset);}catch{}
 }
 function resize(){if(!renderer)return;const w=innerWidth,h=innerHeight;const r=resolution(w,h,devicePixelRatio,quality);renderer.setSize(r.width,r.height,false);camera.aspect=w/h;camera.fov=cameraMode===2?60:65;camera.updateProjectionMatrix();}
 function refreshInput(){
@@ -94,9 +94,9 @@ function loop(now){
  requestAnimationFrame(loop);const raw=(now-previous)/1000;previous=now;const dt=Math.min(.1,Math.max(0,raw));clock+=dt;
  if(!paused&&started){accumulator+=dt;let steps=0;while(accumulator>=1/60&&steps++<6){physics(1/60);accumulator-=1/60;}}else accumulator=0;
  updateCamera(dt);environment.update(player.x,player.z,quality);sky.update(player.x,player.z,quality.shadow);hud(now);
- const interval=1000/quality.fps;if(now<renderDeadline-.35)return;
+ const interval=1000/((paused||!started)?5:quality.fps);if(now<renderDeadline-.35)return;
  const actualGap=lastActualRender?now-lastActualRender:0;lastActualRender=now;
- renderDeadline=Math.max(renderDeadline+interval,now+interval*.5);const before=performance.now();drawMirror();renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);const cpu=performance.now()-before;
+ renderDeadline=Math.max(renderDeadline+interval,now+interval*.5);const before=performance.now();drawMirror();renderer.shadowMap.needsUpdate=clock-shadowAt>=1/quality.shadowHz;if(renderer.shadowMap.needsUpdate)shadowAt=clock;renderer.render(scene,camera);const cpu=performance.now()-before;
  rendered++;fpsFrames++;if(now-lastFps>=1000){fps=fpsFrames*1000/(now-lastFps);fpsFrames=0;lastFps=now;}
  if(started&&!paused){samples.push({at:now,gap:raw*1000,frameMs:actualGap,preset,render:rendered});cpuSamples.push(cpu);if(samples.length>10000)samples.shift();if(cpuSamples.length>10000)cpuSamples.shift();}
 }

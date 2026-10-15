@@ -24,7 +24,7 @@ def import_template(name):
  scene.collection.children.unlink(collection)
  return collection
 def instance(collection,name,x,z,yaw=0,size=1):
- obj=bpy.data.objects.new(name,None);obj.instance_type='COLLECTION';obj.instance_collection=collection;scene.collection.objects.link(obj);obj.location=(x,-z,0);obj.rotation_euler.z=-yaw;obj.scale=(size,size,size);return obj
+ obj=bpy.data.objects.new(name,None);obj.instance_type='COLLECTION';obj.instance_collection=collection;scene.collection.objects.link(obj);obj.location=(x,-z,0);obj.rotation_euler.z=yaw;obj.scale=(size,size,size);return obj
 houses=[import_template('house-'+str(i)+'-high') for i in range(6)]
 for i,h in enumerate(layout['houses']):instance(houses[h['variant']],'House_%02d'%i,h['x'],h['z'],h['rotation'])
 tree=import_template('tree-high');lamp=import_template('streetlight');car=import_template('car')
@@ -49,7 +49,7 @@ for s in range(6,399,6):
  if abs(s-200)>9:box('Centre_mark',(0,s,.013),(.1,4 if abs(s-200)<35 else 2,.005),line)
 bpy.ops.object.light_add(type='SUN',location=(-30,62,37));sun=bpy.context.object;sun.name='Natural_daylight';sun.rotation_euler=(Vector((0,200,0))-sun.location).to_track_quat('-Z','Y').to_euler();sun.data.energy=2.2;sun.data.angle=math.radians(3)
 scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs['Color'].default_value=(.55,.68,.8,1);scene.world.node_tree.nodes['Background'].inputs['Strength'].default_value=.5
-bpy.ops.object.camera_add(location=(-1.28,7.23,1.22));camera=bpy.context.object;camera.name='RHD_driver_1_22_m';camera.rotation_euler=(Vector((-1.28,35,1.17))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.lens=24;camera.data.clip_start=.035;camera.data.clip_end=600;scene.camera=camera
+bpy.ops.object.camera_add(location=(-1.28,6.77,1.22));camera=bpy.context.object;camera.name='RHD_driver_1_22_m';camera.rotation_euler=(Vector((-1.28,35,1.17))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.lens=24;camera.data.clip_start=.035;camera.data.clip_end=600;scene.camera=camera
 scene.render.engine='CYCLES';scene.cycles.samples=64;scene.render.resolution_x=1440;scene.render.resolution_y=900;scene.render.resolution_percentage=100
 # Pack original texture files so the saved .blend is portable.
 bpy.ops.file.pack_all();bpy.ops.wm.save_as_mainfile(filepath=str(out/'elmfield-street.blend'))

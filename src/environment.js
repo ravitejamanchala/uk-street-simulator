@@ -1,5 +1,6 @@
 import * as T from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {BufferGeometryUtils} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 const loader=new GLTFLoader(),textureLoader=new T.TextureLoader();
 const unitBox=new T.BoxGeometry(1,1,1),matrix=new T.Matrix4(),q=new T.Quaternion(),scale=new T.Vector3(),pos=new T.Vector3();
 const material=(color,roughness=.85)=>{const m=new T.MeshStandardMaterial({color,roughness,metalness:0});m.color.convertSRGBToLinear();return m;};
@@ -21,6 +22,23 @@ function instanceModel(template,placements,parent){
   const mesh=new T.InstancedMesh(o.geometry,o.material,placements.length);mesh.castShadow=true;mesh.receiveShadow=true;
   placements.forEach((p,i)=>{pos.set(p.x,0,p.z);q.setFromAxisAngle(new T.Vector3(0,1,0),p.rotation||0);scale.setScalar(p.size||1);matrix.compose(pos,q,scale).multiply(o.matrixWorld);mesh.setMatrixAt(i,matrix);if(p.tint&&o.material.name==='brick')mesh.setColorAt(i,new T.Color(p.tint));if(o.material.name==='roof')mesh.setColorAt(i,new T.Color(['#a6afb2','#b2afa4','#bda38b'][p.variant%3||0]));});mesh.instanceMatrix.needsUpdate=true;parent.add(mesh);
  });
+}
+// Bake static buildings per material/chunk; instancing each variant separately multiplied draw calls.
+const buildingMaterials=new Map();
+function batchBuildings(assets,lots,lod,parent){
+ const groups=new Map();
+ for(const p of lots){const model=assets['house-'+p.variant+'-'+lod];model.updateMatrixWorld(true);
+  const placement=new T.Matrix4().compose(new T.Vector3(p.x,0,p.z),new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),p.rotation||0),new T.Vector3(1,1,1));
+  model.traverse(o=>{if(!o.isMesh)return;const name=o.material.name;let group=groups.get(name);if(!group){group={material:o.material,geometries:[]};groups.set(name,group);}
+   const g=o.geometry.clone().applyMatrix4(new T.Matrix4().multiplyMatrices(placement,o.matrixWorld));
+   const tint=new T.Color(name==='brick'?(p.tint||'#ffffff'):name==='roof'?['#a6afb2','#b2afa4','#bda38b'][p.variant%3]:'#ffffff');
+   const colors=new Float32Array(g.attributes.position.count*3);for(let i=0;i<colors.length;i+=3){colors[i]=tint.r;colors[i+1]=tint.g;colors[i+2]=tint.b;}
+   g.setAttribute('color',new T.BufferAttribute(colors,3));group.geometries.push(g);
+  });
+ }
+ for(const [name,group]of groups){let mat=buildingMaterials.get(name);if(!mat){mat=group.material.clone();mat.vertexColors=true;buildingMaterials.set(name,mat);}
+  const geometry=BufferGeometryUtils.mergeBufferGeometries(group.geometries);for(const g of group.geometries)g.dispose();geometry.computeBoundingSphere();const mesh=new T.Mesh(geometry,mat);mesh.castShadow=mesh.receiveShadow=true;parent.add(mesh);
+ }
 }
 function plane(parent,x,z,w,h,mat,y=.012){const g=new T.PlaneGeometry(w,h);g.rotateX(-Math.PI/2);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++){const px=g.attributes.position.getX(i)+x,pz=g.attributes.position.getZ(i)+z;uv.setXY(i,px/4,pz/4);}const m=new T.Mesh(g,mat);m.position.set(x,y,z);m.receiveShadow=true;parent.add(m);return m;}
 function signTexture(text,{round=false,road=false}={}){
@@ -69,10 +87,10 @@ export function createEnvironment(scene,assets){
  }
  const wheelTracks=new T.MeshStandardMaterial({color:0x343a3e,transparent:true,opacity:.035,roughness:1,depthWrite:false});for(let x of [-2.15,-1.02,1.02,2.15])plane(root,x,-200,.38,400,wheelTracks,.02);
  const lots=assets.layout.houses;
- // Chunked instancing: one draw per material/variant/chunk. Far LOD omits all trim geometry.
+ // Static buildings share one draw per material/chunk across all six variants. Far LOD omits trim.
  for(let start=0;start<400;start+=50){
   const c={z:-start-25,type:'house',high:new T.Group(),low:new T.Group()};root.add(c.high,c.low);chunks.push(c);
-  for(let v=0;v<6;v++){const p=lots.filter(h=>h.variant===v&&-h.z>=start&&-h.z<start+50);if(p.length){instanceModel(assets['house-'+v+'-high'],p,c.high);instanceModel(assets['house-'+v+'-low'],p,c.low);}}
+  const p=lots.filter(h=>-h.z>=start&&-h.z<start+50);batchBuildings(assets,p,'high',c.high);batchBuildings(assets,p,'low',c.low);
  }
  for(const h of lots){
   const side=Math.sign(h.x),edge=side*5.65;const gardenDepth=Math.abs(h.x)-4.3-5.65;
