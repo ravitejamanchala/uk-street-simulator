@@ -1,0 +1,5 @@
+name = "uk-street-simulator"
+account_id = "eab4a0a8ec80610eb37fc56768e971dc"
+compatibility_date = "2026-10-15"
+[assets]
+directory = "./dist"

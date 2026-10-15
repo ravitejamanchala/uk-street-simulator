@@ -1,0 +1,36 @@
+{
+  "repository": "https://github.com/ravitejamanchala/cambridge-learner-driv",
+  "commit": "d28a646a9a11d5c8d19e2dfa969612da60b97665",
+  "files": [
+    {
+      "source": "js/car.js",
+      "copy": "core/car.js",
+      "sha256": "f1450350eb260f859e82cc93b36fea2c4eba4452de2a6805c6c6a53d94bd323e"
+    },
+    {
+      "source": "js/config.js",
+      "copy": "core/config.js",
+      "sha256": "9311380d124e12c4f07a82712ece15686d4fa2868f0a10cc50f6ba6b204d85ed"
+    },
+    {
+      "source": "js/automatic.js",
+      "copy": "core/automatic.js",
+      "sha256": "b05360296bca6867d06dcb8eecb91efa2893e8ec50c996ffc589248601dac316"
+    },
+    {
+      "source": "js/vehicle-state.js",
+      "copy": "core/vehicle-state.js",
+      "sha256": "31ab4246ab493fd9f4dce44d6ce8dde78f15800a9831ed215ab69941e9992d79"
+    },
+    {
+      "source": "js/net.js",
+      "copy": "core/net.js",
+      "sha256": "8bf1a2a9896e2eaf4eba7a47a1b1b3d3d928597f0143be3cd6e2aa20fa5e6598"
+    },
+    {
+      "source": "js/test.js",
+      "copy": "core/test.js",
+      "sha256": "3477c4ded4f7a6b6054cc5256a8a8c82971b38f5a9c879b582358cc66ee3dbc6"
+    }
+  ]
+}

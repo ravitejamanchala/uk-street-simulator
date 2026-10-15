@@ -1,0 +1,4 @@
+import {createServer} from 'node:http';import {readFile,stat} from 'node:fs/promises';import path from 'node:path';
+const base=path.resolve(process.env.SERVE_DIR||'dist');const port=Number(process.env.PORT||8088);
+const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.glb':'model/gltf-binary'};
+createServer(async(req,res)=>{try{const url=new URL(req.url,'http://localhost');const file=path.resolve(base,'.'+decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname));if(!file.startsWith(base+path.sep))throw Error();const data=await readFile(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store','Cross-Origin-Resource-Policy':'same-origin'});res.end(data);}catch{res.writeHead(404);res.end('Not found');}}).listen(port,'127.0.0.1',()=>console.log('Simulator: http://127.0.0.1:'+port));
