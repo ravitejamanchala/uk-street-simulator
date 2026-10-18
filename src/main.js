@@ -9,6 +9,14 @@ import {createTest} from '../core/test.js';
 import {createAutomaticState,selectGear} from '../core/vehicle-state.js';
 import {nearest} from '../core/net.js';
 const $=id=>document.getElementById(id);globalThis.THREE=T;
+// A finished drive can be handed to a friend as a challenge. The score to beat travels in
+// the URL, so neither player needs an account and the link works the moment it is opened.
+const clean=v=>String(v||'').replace(/[^\p{L}\p{N} ]/gu,'').trim().slice(0,16);
+const challenge=(()=>{const q=new URLSearchParams(location.search);if(!q.has('d'))return null;
+ const n=v=>Math.max(0,Math.min(99,Number(q.get(v))|0));
+ return {d:n('d'),s:n('s'),by:clean(q.get('by'))||'Someone'};})();
+// Fewer serious faults wins; a serious fault outranks any number of driving faults, as on the real test.
+const beats=(a,b)=>a.s!==b.s?a.s<b.s:a.d<b.d;
 let createPlayer;
 const coarse=matchMedia('(pointer:coarse)').matches;let preset=coarse?'mobile':'balanced';
 try{const saved=localStorage.getItem('elmfield.quality.v2');if(QUALITY[saved])preset=saved;}catch{}
@@ -28,8 +36,30 @@ function changeCamera(){cameraMode=(cameraMode+1)%3;$('cameraLabel').textContent
 function reset(){
  clearInput();player.place(-1.65,-7,0);player.operation={...createAutomaticState(),parkingBrake:false,gear:'D'};player.lookAt=-1e9;player.observations=[];player.hold=0;player.lean=0;
  traffic.reset();test.setRoute(streetNetwork().route,[0,1,2]);test.reset();test.running=true;test.startedAt=traffic.clock;test.context={lessonId:'elmfield-street',scenarioId:'street-400m',areaId:'fictional-elmfield'};initialBrake=true;physicalContacts.clear();
- $('faultCount').textContent='0 faults';$('faultList').textContent='No faults recorded.';$('gearLabel').textContent='D';$('guideTitle').textContent='Check surroundings, then move off';$('guideDetail').textContent='B or the observation button · keep left';
+ $('resultPanel').hidden=true;$('faultCount').textContent='0 faults';$('faultList').textContent='No faults recorded.';$('gearLabel').textContent='D';$('guideTitle').textContent='Check surroundings, then move off';$('guideDetail').textContent='B or the observation button · keep left';
  if(started)pause(false);player.sync(clock);toast('Reset · check surroundings before moving off');
+}
+function showResult(){
+ const mine={d:test.D,s:test.S},cmp=$('rCompare');
+ $('rScore').textContent=mine.d+' driving · '+mine.s+' serious';
+ if(challenge){
+  const tied=mine.d===challenge.d&&mine.s===challenge.s,won=beats(mine,challenge);
+  $('rEyebrow').textContent='CHALLENGE FROM '+challenge.by.toUpperCase();
+  $('rVerdict').textContent=tied?'Dead heat.':won?'You win.':'Not this time.';
+  cmp.textContent=challenge.by+' drove it with '+challenge.d+' driving · '+challenge.s+' serious.';
+  cmp.className=tied?'':won?'win':'lose';cmp.hidden=false;
+ }else{
+  $('rEyebrow').textContent='PRACTICE COMPLETE';
+  $('rVerdict').textContent=mine.s?'Room to tidy up.':mine.d?'Nicely driven.':'A clean drive.';
+  cmp.hidden=true;
+ }
+ $('rCopied').hidden=true;$('intro').hidden=true;pause(true);$('resultPanel').hidden=false;
+}
+function shareLink(){
+ const u=new URL(location.href);u.search='';
+ u.searchParams.set('d',test.D);u.searchParams.set('s',test.S);
+ const name=clean($('rName').value);if(name)u.searchParams.set('by',name);
+ return u.toString();
 }
 function applyQuality(){
  renderDeadline=performance.now();shadowAt=-1;quality=QUALITY[preset];scene.fog.density=preset==='mobile'?.0075:preset==='balanced'?.006:.0048;$('preset').textContent=preset.toUpperCase();$('quality').value=preset;
@@ -107,13 +137,29 @@ async function boot(){
  assets=await loadAssets(v=>{$('progress').value=v;$('loadStatus').textContent='Street assets '+Math.round(v*100)+'%';});
  environment=createEnvironment(scene,assets);sky=createSky(scene,renderer);player=createPlayer(scene);player.setModel(vehicleModel(assets.car,'#52665d'));cockpit=createCockpit(scene);network=streetNetwork();traffic=createTraffic(scene,assets,network.net);test=createTest(network.net,traffic,player);
  test.onFault=()=>{$('faultCount').textContent=test.D+' D · '+test.S+' S';$('faultList').replaceChildren(...test.faults.slice(0,20).map(f=>{const p=document.createElement('p');p.textContent=(f.kind==='S'?'Serious':'Driving')+' · '+f.cat+': '+f.text;return p;}));toast(test.faults[0].text);};
- test.onFinish=()=>{initialBrake=true;toast('Practice complete · '+test.D+' driving / '+test.S+' serious faults');};
+ test.onFinish=()=>{initialBrake=true;showResult();};
  applyQuality();reset();updateCamera(0);$('load').hidden=true;$('intro').hidden=false;previous=performance.now();requestAnimationFrame(loop);
  const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');const gpu=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
  window.sim={ready:true,player,test,traffic,scene,renderer,get quality(){return preset;},setQuality(value){if(!QUALITY[value])throw Error('Unknown preset');preset=value;applyQuality();},start(){started=true;$('intro').hidden=true;pause(false);},pause,reset,observe,gear,changeCamera,input,keys,
  stats(){const quantile=(a,p)=>{if(!a.length)return 0;const b=a.slice().sort((x,y)=>x-y);return b[Math.floor((b.length-1)*p)];};const s=samples.filter(x=>x.preset===preset);return {preset,targetFps:quality.fps,gpu,viewport:[innerWidth,innerHeight],buffer:[renderer.domElement.width,renderer.domElement.height],fps,frames:s.length,elapsedMs:s.length?s.at(-1).at-s[0].at:0,averageFps:s.length>1?(s.length-1)*1000/(s.at(-1).at-s[0].at):0,rafGapP95:quantile(s.map(x=>x.gap),.95),frameMsP95:quantile(s.map(x=>x.frameMs),.95),renderCpuP50:quantile(cpuSamples,.5),renderCpuP95:quantile(cpuSamples,.95),drawCalls:renderer.info.render.calls,mirrorDrawCalls:lastMirrorCalls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures,geometries:renderer.info.memory.geometries,driverEyeMetres:[.37,1.22,.23],position:[player.x,player.z]};},clearSamples(){samples.length=0;cpuSamples.length=0;},camera};
 }
 $('start').onclick=()=>{started=true;$('intro').hidden=true;pause(false);};$('pause').onclick=()=>pause();$('observe').onclick=observe;$('signalLeft').onclick=()=>signal('L');$('signalRight').onclick=()=>signal('R');$('camera').onclick=changeCamera;$('reset').onclick=()=>{if(player)reset();};$('reverse').onclick=()=>gear('R');$('drive').onclick=()=>gear('D');
+$('rAgain').onclick=()=>{$('resultPanel').hidden=true;reset();pause(false);};
+$('rShare').onclick=async()=>{
+ const link=shareLink(),note=$('rCopied');
+ // Clipboard access is refused in some embedded views; show the link so it can still be copied.
+ try{await navigator.clipboard.writeText(link);note.textContent='Link copied. Send it to them.';}
+ catch{note.textContent=link;}
+ note.hidden=false;
+};
+if(challenge){
+ const el=$('introChallenge'),b=document.createElement('b');
+ b.textContent=challenge.d+' driving · '+challenge.s+' serious';
+ el.append(challenge.by+' drove Elmfield Road with ',b,' faults. Beat it.');
+ el.hidden=false;
+ $('introEyebrow').textContent='A CHALLENGE FROM '+challenge.by.toUpperCase();
+ const start=$('start');if(start.firstChild)start.firstChild.textContent='Accept the challenge ';
+}
 function showHelp(){pause(true);$('helpPanel').hidden=false;}$('help').onclick=showHelp;$('closeHelp').onclick=()=>{$('helpPanel').hidden=true;if(started)pause(false);};$('faults').onclick=()=>{$('faultPanel').hidden=!$('faultPanel').hidden;};
 $('quality').onchange=e=>{preset=e.target.value;if(renderer&&sky)applyQuality();};
 addEventListener('keydown',e=>{if(/SELECT|INPUT|TEXTAREA/.test(e.target.tagName))return;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();keys.add(e.code);if(e.repeat)return;
